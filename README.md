@@ -26,7 +26,7 @@ The automated CI/CD pipeline builds and tests both API and MVC projects upon eve
 
 Watch the walkthrough of the running application, database/Azure integration, Docker execution, and CI/CD setup:
 
-* **YouTube Video Link**: [Insert Your Unlisted YouTube Link Here]
+* **YouTube Video Link**: [https://youtu.be/nUQAUiSqmj0]
 
 ---
 
