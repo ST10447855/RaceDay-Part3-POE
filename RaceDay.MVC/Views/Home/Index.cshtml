@@ -1,0 +1,46 @@
+@model HomeIndexVm
+@{
+    ViewData["Title"] = "Upcoming Events";
+}
+
+<section class="rd-hero mb-4">
+    <h1>Find your next race</h1>
+    <p>Runs, walks and cycle events across South Africa &mdash; pick a category and enter in minutes.</p>
+</section>
+
+<form method="get" asp-controller="Home" asp-action="Index" class="rd-filter row g-2 align-items-end mb-4">
+    <div class="col-md-6">
+        <label for="search" class="form-label">Search</label>
+        <input id="search" name="search" value="@Model.Search" class="form-control" placeholder="Event name or location" />
+    </div>
+    <div class="col-md-3">
+        <label for="typeId" class="form-label">Event type</label>
+        <select id="typeId" name="typeId" class="form-select">
+            <option value="">All types</option>
+            @foreach (var t in Model.Types)
+            {
+                <option value="@t.EventTypeID" selected="@(Model.TypeId == t.EventTypeID)">@t.TypeName</option>
+            }
+        </select>
+    </div>
+    <div class="col-md-3 d-flex gap-2">
+        <button type="submit" class="btn btn-rd flex-grow-1">Filter</button>
+        <a class="btn btn-outline-secondary" asp-controller="Home" asp-action="Index">Clear</a>
+    </div>
+</form>
+
+@if (!Model.Events.Any())
+{
+    <div class="alert alert-info">No upcoming events match your search.</div>
+}
+else
+{
+    <div class="row g-4">
+        @foreach (var item in Model.Events)
+        {
+            <div class="col-md-6 col-lg-4">
+                <partial name="_EventCard" model="item" />
+            </div>
+        }
+    </div>
+}

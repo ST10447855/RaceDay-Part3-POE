@@ -1,0 +1,33 @@
+@model List<ResultVm>
+@using RaceDay.MVC.Helpers
+@{
+    ViewData["Title"] = "My Results";
+}
+
+<h1>My results</h1>
+<p class="text-muted">Your race history. Results appear here once the organiser has captured them.</p>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">No results yet. Once you finish an event and the organiser publishes results, they will show up here.</div>
+}
+else
+{
+    <div class="rd-panel p-0 table-responsive">
+        <table class="table rd-table align-middle mb-0">
+            <thead><tr><th>Event</th><th>Date</th><th>Category</th><th>Finish time</th><th>Position</th></tr></thead>
+            <tbody>
+            @foreach (var r in Model)
+            {
+                <tr>
+                    <td><strong>@r.EventName</strong></td>
+                    <td>@r.EventDate.ToString("dd MMM yyyy")</td>
+                    <td>@r.CategoryName</td>
+                    <td class="rd-time">@r.FinishingTime</td>
+                    <td>@Formatting.Ordinal(r.Position) out of @r.TotalFinishers finishers</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+}

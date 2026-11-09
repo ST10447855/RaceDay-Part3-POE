@@ -1,0 +1,24 @@
+@model OrganiserEventPickerVm
+@{
+    var action = ViewContext.RouteData.Values["action"]?.ToString() ?? "Categories";
+}
+
+@if (!Model.Events.Any())
+{
+    <div class="alert alert-info">You have not created any events yet. <a asp-controller="Organiser" asp-action="CreateEvent">Create one</a> first.</div>
+}
+else
+{
+    <form method="get" asp-controller="Organiser" asp-action="@action" class="row g-2 align-items-end mb-4">
+        <div class="col-md-8">
+            <label for="eventId" class="form-label">Event</label>
+            <select id="eventId" name="eventId" class="form-select" onchange="this.form.submit()">
+                @foreach (var e in Model.Events)
+                {
+                    <option value="@e.EventID" selected="@(Model.SelectedEventId == e.EventID)">@e.Name &ndash; @e.EventDate.ToString("dd MMM yyyy")</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-4"><button type="submit" class="btn btn-outline-secondary">Show</button></div>
+    </form>
+}

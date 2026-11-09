@@ -1,0 +1,36 @@
+@model OrganiserEventPageVm<OrganiserEnrolmentVm>
+@{
+    ViewData["Title"] = "Event Enrolments";
+}
+
+<h1>Event enrolments</h1>
+<partial name="_EventPicker" model="Model" />
+
+@if (Model.SelectedEventId.HasValue)
+{
+    @if (!Model.Items.Any())
+    {
+        <div class="alert alert-info">Nobody has enrolled for this event yet.</div>
+    }
+    else
+    {
+        <p class="text-muted">@Model.Items.Count participant(s) enrolled.</p>
+        <div class="rd-panel p-0 table-responsive">
+            <table class="table rd-table align-middle mb-0">
+                <thead><tr><th>Participant</th><th>Email</th><th>Category</th><th>Entered on</th><th>Status</th></tr></thead>
+                <tbody>
+                @foreach (var e in Model.Items)
+                {
+                    <tr>
+                        <td><strong>@e.ParticipantName</strong></td>
+                        <td>@e.ParticipantEmail</td>
+                        <td>@e.CategoryName</td>
+                        <td>@e.EnrolmentDate.ToString("dd MMM yyyy")</td>
+                        <td><partial name="_StatusBadge" model="e.Status" /></td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    }
+}

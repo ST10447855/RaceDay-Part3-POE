@@ -1,0 +1,93 @@
+@model EventDetailVm
+@{
+    ViewData["Title"] = Model.Name;
+    var role = Context.Session.GetString("UserRole");
+    var isParticipant = string.Equals(role, "Participant", StringComparison.OrdinalIgnoreCase);
+    var isLoggedIn = !string.IsNullOrEmpty(Context.Session.GetString("UserEmail"));
+    var isPast = Model.EventDate < DateTime.Now;
+}
+
+<a asp-controller="Home" asp-action="Index" class="text-decoration-none">&larr; Back to events</a>
+
+<div class="rd-panel mt-3 p-0 overflow-hidden">
+    @if (!string.IsNullOrWhiteSpace(Model.BannerImageURL))
+    {
+        <img src="@Model.BannerImageURL" class="rd-banner" alt="@Model.Name banner" />
+    }
+    else
+    {
+        <div class="rd-banner rd-card-img-placeholder"><span>@Model.EventTypeName</span></div>
+    }
+
+    <div class="p-4">
+        <div class="d-flex justify-content-between flex-wrap gap-2">
+            <h1 class="mb-1">@Model.Name</h1>
+            <span class="badge rd-type-badge align-self-start">@Model.EventTypeName</span>
+        </div>
+        <p class="text-muted">@Model.Location &middot; @Model.Distance.ToString("0.##") km &middot; <span class="rd-date">@Model.EventDate.ToString("dddd, dd MMMM yyyy HH:mm")</span></p>
+        <p>@Model.Description</p>
+    </div>
+</div>
+
+<div class="rd-panel mt-4 p-4">
+    <h3>Categories</h3>
+
+    @if (!Model.Categories.Any())
+    {
+        <p class="text-muted mb-0">The organiser has not added any categories yet.</p>
+    }
+    else if (isParticipant && !isPast)
+    {
+        <form asp-controller="RaceEvents" asp-action="Enrol" method="post">
+            <input type="hidden" name="eventId" value="@Model.EventID" />
+            <div class="list-group mb-3">
+                @foreach (var c in Model.Categories)
+                {
+                    <label class="list-group-item d-flex align-items-center gap-3">
+                        <input class="form-check-input mt-0" type="radio" name="categoryId" value="@c.CategoryID" required />
+                        <span class="flex-grow-1"><strong>@c.CategoryName</strong>
+                            <span class="text-muted small d-block">@c.Distance.ToString("0.##") km
+                                @if (c.MaximumAge > 0) { <text>&middot; ages @c.MinimumAge&ndash;@c.MaximumAge</text> }
+                            </span>
+                        </span>
+                    </label>
+                }
+            </div>
+            <button type="submit" class="btn btn-rd btn-lg">Enter this event</button>
+        </form>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table rd-table align-middle mb-3">
+                <thead><tr><th>Category</th><th>Distance</th><th>Ages</th></tr></thead>
+                <tbody>
+                @foreach (var c in Model.Categories)
+                {
+                    <tr>
+                        <td>@c.CategoryName</td>
+                        <td>@c.Distance.ToString("0.##") km</td>
+                        <td>@(c.MaximumAge > 0 ? $"{c.MinimumAge}-{c.MaximumAge}" : "All ages")</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+
+        @if (isPast)
+        {
+            <div class="alert alert-secondary mb-0">This event has already taken place.</div>
+        }
+        else if (!isLoggedIn)
+        {
+            <div class="alert alert-info mb-0">
+                <a asp-controller="Account" asp-action="Login">Log in</a> or
+                <a asp-controller="Account" asp-action="Register">register</a> as a participant to enter this event.
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-secondary mb-0">Only participant accounts can enter events.</div>
+        }
+    }
+</div>

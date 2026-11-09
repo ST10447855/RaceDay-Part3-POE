@@ -1,0 +1,69 @@
+@model OrganiserEventPageVm<CategoryVm>
+@{
+    ViewData["Title"] = "Categories";
+}
+
+<h1>Event categories</h1>
+<partial name="_EventPicker" model="Model" />
+
+@if (Model.SelectedEventId.HasValue)
+{
+    <div class="row g-4">
+        <div class="col-lg-7">
+            @if (!Model.Items.Any())
+            {
+                <div class="alert alert-info">No categories yet for this event. Add one using the form.</div>
+            }
+            else
+            {
+                <div class="rd-panel p-0 table-responsive">
+                    <table class="table rd-table align-middle mb-0">
+                        <thead><tr><th>Category</th><th>Ages</th><th>Distance</th><th></th></tr></thead>
+                        <tbody>
+                        @foreach (var c in Model.Items)
+                        {
+                            <tr>
+                                <td><strong>@c.CategoryName</strong></td>
+                                <td>@(c.MaximumAge > 0 ? $"{c.MinimumAge}-{c.MaximumAge}" : "All ages")</td>
+                                <td>@c.Distance.ToString("0.##") km</td>
+                                <td class="text-end">
+                                    <form asp-action="DeleteCategory" method="post" class="d-inline" onsubmit="return confirm('Remove this category?');">
+                                        <input type="hidden" name="id" value="@c.CategoryID" />
+                                        <input type="hidden" name="eventId" value="@Model.SelectedEventId" />
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">Remove</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+
+        <div class="col-lg-5">
+            <div class="rd-panel p-4">
+                <h5>Add a category</h5>
+                <form asp-action="AddCategory" method="post">
+                    <input type="hidden" name="EventID" value="@Model.SelectedEventId" />
+                    <div class="mb-3">
+                        <label for="CategoryName" class="form-label">Name</label>
+                        <input id="CategoryName" name="CategoryName" class="form-control" placeholder="e.g. Under 20, Senior, 21km" required maxlength="100" />
+                    </div>
+                    <div class="row g-2 mb-3">
+                        <div class="col"><label for="MinimumAge" class="form-label">Min age</label>
+                            <input id="MinimumAge" name="MinimumAge" type="number" min="0" max="120" value="0" class="form-control" /></div>
+                        <div class="col"><label for="MaximumAge" class="form-label">Max age</label>
+                            <input id="MaximumAge" name="MaximumAge" type="number" min="0" max="120" value="0" class="form-control" /></div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="Distance" class="form-label">Distance (km)</label>
+                        <input id="Distance" name="Distance" type="number" step="0.1" min="0.1" class="form-control" required />
+                    </div>
+                    <div class="form-text mb-3">Use 0 for max age when there is no upper limit.</div>
+                    <button type="submit" class="btn btn-rd w-100">Add category</button>
+                </form>
+            </div>
+        </div>
+    </div>
+}

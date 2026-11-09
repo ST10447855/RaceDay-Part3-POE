@@ -1,0 +1,44 @@
+@model OrganiserEventPageVm<OrganiserEnrolmentVm>
+@{
+    ViewData["Title"] = "Capture Results";
+}
+
+<h1>Capture results</h1>
+<p class="text-muted">Enter each participant's finish time (hh:mm:ss) and finishing position. Saving publishes it to the participant's My Results page.</p>
+<partial name="_EventPicker" model="Model" />
+
+@if (Model.SelectedEventId.HasValue)
+{
+    @if (!Model.Items.Any())
+    {
+        <div class="alert alert-info">There are no enrolled participants for this event yet.</div>
+    }
+    else
+    {
+        <div class="rd-panel p-0 table-responsive">
+            <table class="table rd-table align-middle mb-0">
+                <thead><tr><th>Participant</th><th>Category</th><th>Finish time</th><th>Position</th><th></th></tr></thead>
+                <tbody>
+                @foreach (var e in Model.Items)
+                {
+                    <tr>
+                        <td><strong>@e.ParticipantName</strong>
+                            @if (e.HasResult) { <span class="badge status-confirmed ms-1">Published</span> }
+                        </td>
+                        <td>@e.CategoryName</td>
+                        <td><input form="f-@e.EnrolmentID" name="finishingTime" value="@e.FinishingTime" class="form-control form-control-sm" placeholder="00:52:14" maxlength="30" required style="min-width:110px" /></td>
+                        <td><input form="f-@e.EnrolmentID" name="position" type="number" min="1" value="@e.Position" class="form-control form-control-sm" required style="min-width:80px" /></td>
+                        <td class="text-end">
+                            <form id="f-@e.EnrolmentID" asp-action="SaveResult" method="post">
+                                <input type="hidden" name="enrolmentId" value="@e.EnrolmentID" />
+                                <input type="hidden" name="eventId" value="@Model.SelectedEventId" />
+                                <button type="submit" class="btn btn-sm btn-rd">Save</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    }
+}

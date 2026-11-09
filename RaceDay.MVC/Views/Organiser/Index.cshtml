@@ -1,0 +1,52 @@
+@model List<EventVm>
+@{
+    ViewData["Title"] = "Organiser Dashboard";
+    var upcoming = Model.Where(e => e.EventDate >= DateTime.Today).OrderBy(e => e.EventDate).ToList();
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <h1 class="mb-0">Organiser dashboard</h1>
+        <span class="text-muted">@ViewBag.UserEmail</span>
+    </div>
+    <a class="btn btn-rd" asp-controller="Organiser" asp-action="CreateEvent">+ New event</a>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-4"><div class="rd-stat"><span>@Model.Count</span>Events created</div></div>
+    <div class="col-md-4"><div class="rd-stat"><span>@Model.Sum(e => e.EnrolmentCount)</span>Total enrolments</div></div>
+    <div class="col-md-4"><div class="rd-stat"><span>@upcoming.Count</span>Upcoming events</div></div>
+</div>
+
+<h3>Your events</h3>
+@if (!Model.Any())
+{
+    <div class="alert alert-info">You have not created any events yet. Click <strong>New event</strong> to get started.</div>
+}
+else
+{
+    <div class="rd-panel p-0 table-responsive">
+        <table class="table rd-table align-middle mb-0">
+            <thead><tr><th>Event</th><th>Date</th><th>Type</th><th class="text-center">Categories</th><th class="text-center">Enrolments</th><th></th></tr></thead>
+            <tbody>
+            @foreach (var e in Model.OrderBy(x => x.EventDate))
+            {
+                <tr>
+                    <td><strong>@e.Name</strong><div class="small text-muted">@e.Location</div></td>
+                    <td>@e.EventDate.ToString("dd MMM yyyy HH:mm")
+                        @if (e.EventDate >= DateTime.Today) { <span class="badge status-confirmed ms-1">Upcoming</span> }
+                        else { <span class="badge status-other ms-1">Past</span> }
+                    </td>
+                    <td>@e.EventTypeName</td>
+                    <td class="text-center">@e.CategoryCount</td>
+                    <td class="text-center"><strong>@e.EnrolmentCount</strong></td>
+                    <td class="text-end">
+                        <a class="btn btn-sm btn-outline-secondary" asp-action="Enrolments" asp-route-eventId="@e.EventID">Enrolments</a>
+                        <a class="btn btn-sm btn-outline-secondary" asp-action="Results" asp-route-eventId="@e.EventID">Results</a>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+}

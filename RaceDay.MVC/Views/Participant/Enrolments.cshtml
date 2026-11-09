@@ -1,0 +1,34 @@
+@model List<EnrolmentVm>
+@{
+    ViewData["Title"] = "My Enrolments";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="mb-0">My enrolments</h1>
+    <a class="btn btn-rd" asp-controller="Home" asp-action="Index">Browse events</a>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">You have not entered any events yet. Browse events to get started!</div>
+}
+else
+{
+    <div class="rd-panel p-0 table-responsive">
+        <table class="table rd-table align-middle mb-0">
+            <thead><tr><th>Event</th><th>Date</th><th>Category</th><th>Entered on</th><th>Status</th></tr></thead>
+            <tbody>
+            @foreach (var e in Model)
+            {
+                <tr>
+                    <td><a asp-controller="RaceEvents" asp-action="Details" asp-route-id="@e.EventID">@e.EventName</a></td>
+                    <td>@e.EventDate.ToString("dd MMM yyyy")</td>
+                    <td>@e.CategoryName</td>
+                    <td>@e.EnrolmentDate.ToString("dd MMM yyyy")</td>
+                    <td><partial name="_StatusBadge" model="e.Status" /></td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+}

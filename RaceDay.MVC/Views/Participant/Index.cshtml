@@ -1,0 +1,37 @@
+@{
+    ViewData["Title"] = "Participant Dashboard";
+}
+
+<h1>Participant dashboard</h1>
+<p class="text-muted">Welcome back, @ViewBag.UserEmail.</p>
+
+<div class="row g-4 mt-1">
+    <div class="col-md-6 col-lg-3">
+        <div class="rd-panel p-4 h-100">
+            <h5>Browse events</h5>
+            <p class="text-muted">Find a race and enter it with your chosen category.</p>
+            <a class="btn btn-rd w-100" asp-controller="Home" asp-action="Index">View events</a>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+        <div class="rd-panel p-4 h-100">
+            <h5>My enrolments</h5>
+            <p class="text-muted">See the events you have entered and their status.</p>
+            <a class="btn btn-rd w-100" asp-controller="Participant" asp-action="Enrolments">View enrolments</a>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+        <div class="rd-panel p-4 h-100">
+            <h5>My results</h5>
+            <p class="text-muted">Your finish times and positions from completed races.</p>
+            <a class="btn btn-rd w-100" asp-controller="Participant" asp-action="Results">View results</a>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+        <div class="rd-panel p-4 h-100">
+            <h5>My profile</h5>
+            <p class="text-muted">Update your details and profile picture.</p>
+            <a class="btn btn-rd w-100" asp-controller="Participant" asp-action="Profile">Edit profile</a>
+        </div>
+    </div>
+</div>

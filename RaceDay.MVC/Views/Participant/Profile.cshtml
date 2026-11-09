@@ -1,0 +1,63 @@
+@model ProfileVm
+@{
+    ViewData["Title"] = "My Profile";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-7">
+        <div class="rd-panel p-4">
+            <h1>My profile</h1>
+
+            <div class="d-flex align-items-center gap-3 mb-4">
+                @if (!string.IsNullOrWhiteSpace(Model.ProfilePictureURL))
+                {
+                    <img src="@Model.ProfilePictureURL" alt="Profile picture" class="rd-avatar" />
+                }
+                else
+                {
+                    <div class="rd-avatar rd-avatar-placeholder">@(string.IsNullOrEmpty(Model.FirstName) ? "?" : Model.FirstName.Substring(0, 1).ToUpper())</div>
+                }
+                <div class="text-muted">@Model.Email</div>
+            </div>
+
+            <form asp-controller="Participant" asp-action="Profile" method="post" enctype="multipart/form-data">
+                <div asp-validation-summary="All" class="text-danger mb-3"></div>
+                <input type="hidden" asp-for="Email" />
+                <input type="hidden" asp-for="ProfilePictureURL" />
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label asp-for="FirstName" class="form-label"></label>
+                        <input asp-for="FirstName" class="form-control" />
+                        <span asp-validation-for="FirstName" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="LastName" class="form-label"></label>
+                        <input asp-for="LastName" class="form-control" />
+                        <span asp-validation-for="LastName" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="PhoneNumber" class="form-label"></label>
+                        <input asp-for="PhoneNumber" class="form-control" />
+                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="DateOfBirth" class="form-label"></label>
+                        <input asp-for="DateOfBirth" class="form-control" />
+                        <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+                    </div>
+                    <div class="col-12">
+                        <label for="profilePicture" class="form-label">Profile picture</label>
+                        <input type="file" id="profilePicture" name="profilePicture" class="form-control" accept="image/*" />
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-rd mt-4">Save changes</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
